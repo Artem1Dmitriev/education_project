@@ -1,16 +1,42 @@
+
 services:
+  postgres:  # Добавьте сервис PostgreSQL
+    image: postgres:15-alpine
+    container_name: ai-gateway-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ai_framework_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   ai-gateway:
     build: .
     ports:
       - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - APP_ENV=${APP_ENV}
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/ai_framework_db
+      - SYNC_DATABASE_URL=postgresql://postgres:postgres@postgres:5432/ai_framework_db
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-sk-test-key}
+      - APP_ENV=${APP_ENV:-development}
+      - APP_DEBUG=true
     volumes:
       - ./app:/app/app
       - ./logs:/app/logs
-    env_file:
-      - .env
-    command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: >
+      sh -c "sleep 5 && poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     restart: unless-stopped
+
+volumes:
+  postgres_data:
