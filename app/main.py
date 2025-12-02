@@ -5,9 +5,9 @@ from sqlalchemy import text
 import uvicorn
 from app.core.config import settings
 from app.database.session import engine, check_db_connection
-from app.api.v1.endpoints import health, users
 from app.api.v1.endpoints.health import router as health_router
 from app.api.v1.endpoints.users import router as users_router
+from app.api.v1.endpoints.chat_simple import router as chat_router
 
 
 @asynccontextmanager
@@ -79,6 +79,7 @@ if settings.BACKEND_CORS_ORIGINS:
 # Подключаем роутеры
 app.include_router(health_router, prefix=settings.API_V1_PREFIX, tags=["health"])
 app.include_router(users_router, prefix=settings.API_V1_PREFIX)
+app.include_router(chat_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/")
