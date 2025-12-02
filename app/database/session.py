@@ -1,12 +1,13 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import declarative_base
+from sqlalchemy import MetaData
 from app.core.config import settings
 
+# Базовый класс для моделей (если будем использовать ORM)
+Base = declarative_base()
 
-class Base(DeclarativeBase):
-    """Базовый класс для всех моделей"""
-    pass
-
+# Метаданные для явного указания схемы
+metadata = MetaData(schema="ai_framework")
 
 # Асинхронный движок для работы с БД
 engine = create_async_engine(
@@ -34,3 +35,14 @@ async def get_db() -> AsyncSession:
             yield session
         finally:
             await session.close()
+
+
+# Утилита для проверки соединения
+async def check_db_connection():
+    """Проверка подключения к БД"""
+    try:
+        async with engine.connect() as conn:
+            await conn.execute("SELECT 1")
+        return True
+    except Exception:
+        return False

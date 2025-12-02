@@ -5,8 +5,11 @@ from sqlalchemy import text
 import uvicorn
 
 from app.core.config import settings
-from app.api.v1.endpoints import health
-from app.database.session import engine, Base
+from app.database.session import engine
+from app.api.v1.endpoints import health, users
+
+from app.api.v1.endpoints.health import router as health_router
+from app.api.v1.endpoints.users import router as users_router
 
 
 @asynccontextmanager
@@ -53,7 +56,8 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 # Подключаем роутеры
-app.include_router(health.router, prefix=settings.API_V1_PREFIX, tags=["health"])
+app.include_router(health_router, prefix=settings.API_V1_PREFIX, tags=["health"])
+app.include_router(users_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/")
@@ -63,6 +67,30 @@ async def root():
         "message": "Welcome to AI Gateway Framework",
         "version": settings.APP_VERSION,
         "docs": "/docs" if settings.DEBUG else None,
+        "endpoints": {
+            "health": f"{settings.API_V1_PREFIX}/health",
+            "users": f"{settings.API_V1_PREFIX}/users",
+            "docs": "/docs",
+        }
+    }
+
+
+@app.get("/api")
+async def api_info():
+    """Информация о API"""
+    return {
+        "api_version": "v1",
+        "prefix": settings.API_V1_PREFIX,
+        "available_endpoints": [
+            "GET /api/v1/health",
+            "GET /api/v1/health/db",
+            "GET /api/v1/health/tables",
+            "GET /api/v1/users",
+            "POST /api/v1/users",
+            "GET /api/v1/users/{user_id}",
+            "GET /api/v1/users/{user_id}/requests",
+            "GET /api/v1/users/{user_id}/stats",
+        ]
     }
 
 

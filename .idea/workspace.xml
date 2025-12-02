@@ -4,10 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="init">
+    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Создал архитектуру, начально настроил docker и poetry">
+      <change beforePath="$PROJECT_DIR$/.idea/education_project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/education_project.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alembic/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alembic/versions/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/schemas/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/session.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/test_db.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +77,31 @@
       <recent name="C:\Users\dmitr\PycharmProjects\education_project\ai_gateway_framework\scripts" />
     </key>
   </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="education_project" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.13 virtualenv at C:\Users\dmitr\PycharmProjects\ai-gateway-framework\.venv" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -104,7 +141,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764708491431</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Создал архитектуру, начально настроил docker и poetry">
+      <option name="closed" value="true" />
+      <created>1764710336008</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1764710336008</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -122,6 +167,7 @@
     <MESSAGE value="init proj. create arch" />
     <MESSAGE value="first changes" />
     <MESSAGE value="init" />
-    <option name="LAST_COMMIT_MESSAGE" value="init" />
+    <MESSAGE value="Создал архитектуру, начально настроил docker и poetry" />
+    <option name="LAST_COMMIT_MESSAGE" value="Создал архитектуру, начально настроил docker и poetry" />
   </component>
 </project>
