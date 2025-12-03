@@ -1,44 +1,58 @@
-# app/api/v1/endpoints/health.py
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
-from app.database.session import get_db, check_db_connection
+from datetime import datetime
 import logging
+
+from app.database.session import get_db, check_db_connection
+from app.schemas import (
+    HealthCheckResponse,
+    DatabaseHealthResponse,
+    TableHealthResponse,
+    SystemHealthResponse
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.get("/health")
+@router.get("/health", response_model=HealthCheckResponse)
 async def health_check():
     """Проверка работоспособности приложения"""
-    return {
-        "status": "healthy",
-        "service": "ai-gateway-framework",
-        "timestamp": "2024-01-01T00:00:00Z"
-    }
+    return HealthCheckResponse(
+        status="healthy",
+        service="ai-gateway-framework",
+        version="0.1.0",
+        timestamp=datetime.utcnow().isoformat(),
+        uptime=None,  # Можно добавить расчет времени работы
+        dependencies=None
+    )
 
 
-@router.get("/health/db")
+@router.get("/health/db", response_model=DatabaseHealthResponse)
 async def health_check_db():
     """Проверка подключения к базе данных"""
     try:
         db_connected = await check_db_connection()
-        return {
-            "status": "healthy" if db_connected else "unhealthy",
-            "database": "connected" if db_connected else "disconnected",
-            "check": db_connected,
-        }
+        return DatabaseHealthResponse(
+            status="healthy" if db_connected else "unhealthy",
+            database="ai_framework_db",
+            check=db_connected,
+            error=None if db_connected else "Database connection failed",
+            connection_time_ms=None
+        )
     except Exception as e:
         logger.error(f"Database health check failed: {e}")
-        return {
-            "status": "unhealthy",
-            "database": "disconnected",
-            "error": str(e),
-        }
+        return DatabaseHealthResponse(
+            status="unhealthy",
+            database="ai_framework_db",
+            check=False,
+            error=str(e),
+            connection_time_ms=None
+        )
 
 
-@router.get("/health/tables")
+@router.get("/health/tables", response_model=SystemHealthResponse)
 async def check_tables(db: AsyncSession = Depends(get_db)):
     """Проверка существования и доступности таблиц"""
     tables_to_check = [
@@ -64,33 +78,43 @@ async def check_tables(db: AsyncSession = Depends(get_db)):
             result = await db.execute(query)
             count = result.scalar() or 0
 
-            results.append({
-                "table": table_name,
-                "exists": True,
-                "accessible": True,
-                "row_count": count,
-            })
+            results.append(
+                TableHealthResponse(
+                    table=table_name,
+                    exists=True,
+                    accessible=True,
+                    row_count=count,
+                    error=None
+                )
+            )
         except Exception as e:
-            results.append({
-                "table": table_name,
-                "exists": False,
-                "accessible": False,
-                "error": str(e),
-            })
+            results.append(
+                TableHealthResponse(
+                    table=table_name,
+                    exists=False,
+                    accessible=False,
+                    row_count=None,
+                    error=str(e)
+                )
+            )
 
-    all_accessible = all(r["accessible"] for r in results)
+    all_accessible = all(r.accessible for r in results)
 
-    return {
-        "status": "healthy" if all_accessible else "partial",
-        "tables": results,
-        "all_tables_accessible": all_accessible,
-    }
-
-
-@router.get("/health/data")
-async def check_sample_data():
-    """Проверка наличия тестовых данных"""
-    return {
-        "status": "info",
-        "message": "Use /health/tables for detailed table information"
-    }
+    return SystemHealthResponse(
+        overall_status="healthy" if all_accessible else "partial",
+        api_status=HealthCheckResponse(
+            status="healthy",
+            service="ai-gateway-framework",
+            version="0.1.0",
+            timestamp=datetime.utcnow().isoformat()
+        ),
+        database_status=DatabaseHealthResponse(
+            status="healthy" if all_accessible else "partial",
+            database="ai_framework_db",
+            check=all_accessible,
+            error=None
+        ),
+        tables_status=results,
+        providers_status=None,
+        cache_status=None
+    )

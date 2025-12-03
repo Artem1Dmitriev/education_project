@@ -9,7 +9,7 @@ import hashlib
 import logging
 
 from app.database.session import get_db
-from app.api.v1.schemas.chat import ChatRequest, ChatResponse
+from app.schemas import ChatRequest, ChatResponse, SuccessResponse, ErrorResponse
 from app.core.providers.factory import provider_factory
 from app.core.providers.registry import registry
 
@@ -194,12 +194,14 @@ async def chat(
             response_id=save_result["response_id"],
             content=provider_response.content,
             model_used=provider_response.model_used,
-            provider=provider_response.provider_name,
+            provider_used=provider_response.provider_name,
             input_tokens=provider_response.input_tokens,
             output_tokens=provider_response.output_tokens,
             total_cost=save_result["total_cost"],
             processing_time_ms=total_time,
-            timestamp=datetime.utcnow()
+            timestamp=datetime.utcnow(),
+            finish_reason=provider_response.finish_reason,
+            is_cached=False
         )
 
     except HTTPException:
@@ -212,23 +214,29 @@ async def chat(
 @router.get("/providers")
 async def list_providers():
     """Получить список провайдеров и моделей"""
-    return {
-        "status": "success",
-        "providers": registry.list_providers(),
-        "models": registry.list_models(),
-        "counts": {
-            "providers": len(registry.providers),
-            "models": len(registry.models)
+    return SuccessResponse(
+        success=True,
+        message="Providers list retrieved successfully",
+        data={
+            "providers": registry.list_providers(),
+            "models": registry.list_models(),
+            "counts": {
+                "providers": len(registry.providers),
+                "models": len(registry.models)
+            }
         }
-    }
+    )
 
 
 @router.get("/models")
 async def list_models():
     """Получить список моделей"""
     models = registry.list_models()
-    return {
-        "status": "success",
-        "models": models,
-        "count": len(models)
-    }
+    return SuccessResponse(
+        success=True,
+        message="Models list retrieved successfully",
+        data={
+            "models": models,
+            "count": len(models)
+        }
+    )

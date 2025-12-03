@@ -4,32 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Сделал запрос к провайдеру (правда ключ от OpenAI заблокали)">
-      <change afterPath="$PROJECT_DIR$/app/api/v1/schemas/base.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/providers/factory.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/providers/registry.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
+    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="настроил провайдеров">
+      <change afterPath="$PROJECT_DIR$/app/schemas/request.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/schemas/users.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/deps.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/deps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/chat_simple.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/schemas/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/chat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/file.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/health.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/response.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/providers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/providers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/providers/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/providers/gemini_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/gemini_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/providers/mock_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/mock_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/providers/ollama_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/ollama_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/providers/openai_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/openai_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/database/repositories/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/session.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/init_db.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,6 +74,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\dmitr\PycharmProjects\ai-gateway-framework\app\schemas" />
       <recent name="C:\Users\dmitr\PycharmProjects\education_project\ai_gateway_framework" />
       <recent name="C:\Users\dmitr\PycharmProjects\education_project\ai_gateway_framework\scripts" />
     </key>
@@ -185,7 +175,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764719244194</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="настроил провайдеров">
+      <option name="closed" value="true" />
+      <created>1764735595873</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1764735595873</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -207,6 +205,7 @@
     <MESSAGE value="Настроил работу бд" />
     <MESSAGE value="Перенес правильную бд" />
     <MESSAGE value="Сделал запрос к провайдеру (правда ключ от OpenAI заблокали)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Сделал запрос к провайдеру (правда ключ от OpenAI заблокали)" />
+    <MESSAGE value="настроил провайдеров" />
+    <option name="LAST_COMMIT_MESSAGE" value="настроил провайдеров" />
   </component>
 </project>

@@ -5,15 +5,17 @@ from typing import List, Optional
 
 from app.database.session import get_db
 from app.database.repositories import get_repository
-from app.api.v1.schemas import (
-    UserCreate, UserUpdate, UserInDB,
-    RequestCreate, RequestInDB
+from app.schemas import (
+    UserCreate, UserUpdate, UserResponse,
+    PaginationParams, PaginatedResponse,
+    RequestCreate, RequestResponse,
+    SuccessResponse, ErrorResponse
 )
 
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.get("/", response_model=List[UserInDB])
+@router.get("/", response_model=List[UserResponse])
 async def get_users(
         skip: int = Query(0, ge=0),
         limit: int = Query(100, ge=1, le=1000),
@@ -31,7 +33,7 @@ async def get_users(
     return users
 
 
-@router.get("/{user_id}", response_model=UserInDB)
+@router.get("/{user_id}", response_model=UserResponse)
 async def get_user(user_id: str, db: AsyncSession = Depends(get_db)):
     """Получить пользователя по ID"""
     repo = get_repository("user", db)
@@ -43,7 +45,7 @@ async def get_user(user_id: str, db: AsyncSession = Depends(get_db)):
     return user
 
 
-@router.post("/", response_model=UserInDB)
+@router.post("/", response_model=UserResponse)
 async def create_user(
         user_data: UserCreate,
         db: AsyncSession = Depends(get_db)
@@ -64,7 +66,7 @@ async def create_user(
     return user
 
 
-@router.get("/{user_id}/requests", response_model=List[RequestInDB])
+@router.get("/{user_id}/requests", response_model=List[RequestResponse])
 async def get_user_requests(
         user_id: str,
         limit: int = Query(50, ge=1, le=100),

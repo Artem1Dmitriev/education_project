@@ -1,4 +1,4 @@
-# app/core/configs.py
+# app/core/config.py
 import os
 from typing import List, Optional
 from pydantic_settings import BaseSettings
