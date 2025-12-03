@@ -1,3 +1,4 @@
+# app/database/repositories/base.py
 from typing import Generic, TypeVar, Type, Optional, List, Any, Dict, Union
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete, and_, or_

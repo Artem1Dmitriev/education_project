@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# scripts/init_db.py
 import asyncio
 import sys
 import os

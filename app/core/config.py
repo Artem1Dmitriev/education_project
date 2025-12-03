@@ -1,3 +1,4 @@
+# app/core/configs.py
 import os
 from typing import List, Optional
 from pydantic_settings import BaseSettings
@@ -49,8 +50,12 @@ class Settings(BaseSettings):
         db_url = str(values.get("DATABASE_URL"))
         return db_url.replace("postgresql+asyncpg://", "postgresql://")
 
-    # OpenAI
+    # AI Providers API Keys
     OPENAI_API_KEY: Optional[str] = None
+    GEMINI_API_KEY: Optional[str] = None
+    ANTHROPIC_API_KEY: Optional[str] = None
+    HUGGINGFACE_API_KEY: Optional[str] = None
+    COHERE_API_KEY: Optional[str] = None
 
     # Security
     SECRET_KEY: str = "your-secret-key-change-in-production"

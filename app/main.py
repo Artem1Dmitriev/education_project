@@ -1,13 +1,14 @@
+# app/main.py
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 import uvicorn
 from app.core.config import settings
-from app.database.session import engine, check_db_connection
+from app.database.session import engine, check_db_connection, AsyncSessionLocal
 from app.api.v1.endpoints.health import router as health_router
 from app.api.v1.endpoints.users import router as users_router
-from app.api.v1.endpoints.chat_simple import router as chat_router
+from app.api.v1.endpoints.chat import router as chat_router
 
 
 @asynccontextmanager
@@ -16,38 +17,49 @@ async def lifespan(app: FastAPI):
     # При запуске
     print("🚀 Starting AI Gateway Framework...")
 
-    # Проверяем подключение к БД
     try:
+        # 1. Проверяем подключение к БД
         if not await check_db_connection():
-            print("⚠️  Database connection failed. Please check your database configuration.")
+            print("⚠️  Database connection failed. Some features may be unavailable.")
         else:
             print("✅ Database connection successful")
 
-            # Проверяем существование схемы
-            from sqlalchemy import text
-            async with engine.connect() as conn:
-                result = await conn.execute(text("""
-                    SELECT EXISTS(
-                        SELECT 1 FROM information_schema.schemata 
-                        WHERE schema_name = 'ai_framework'
-                    )
-                """))
-                schema_exists = result.scalar()
+        # 2. Инициализируем реестр провайдеров (если есть подключение к БД)
+        try:
+            from app.core.providers.registry import registry
 
-                if not schema_exists:
-                    print(
-                        "⚠️  Schema 'ai_framework' not found. You need to run: python scripts/create_database_structure.py")
-                else:
-                    print("✅ Schema 'ai_framework' exists")
+            # Пробуем загрузить реестр из БД
+            async with AsyncSessionLocal() as db:
+                await registry.load_from_database(db)
 
-                    # Проверяем основные таблицы
-                    result = await conn.execute(
-                        text("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ai_framework'"))
-                    table_count = result.scalar()
-                    print(f"📊 Found {table_count} tables in ai_framework schema")
+            # Выводим статистику
+            print(f"✅ ProviderRegistry loaded:")
+            print(f"   - Providers: {len(registry.providers)}")
+            print(f"   - Models: {len(registry.models)}")
+
+            for provider_name, models in registry.provider_models.items():
+                print(f"   - {provider_name}: {len(models)} models")
+
+            # 3. Проверяем доступность провайдеров (опционально)
+            from app.core.providers.factory import provider_factory
+            print("🔍 Checking provider health...")
+
+            for provider_name in registry.providers.keys():
+                provider = provider_factory.get_provider(provider_name)
+                if provider:
+                    try:
+                        is_healthy = await provider.health_check()
+                        status = "✅" if is_healthy else "❌"
+                        print(f"   {status} {provider_name}: {'healthy' if is_healthy else 'unhealthy'}")
+                    except Exception as e:
+                        print(f"   ❌ {provider_name}: health check failed - {e}")
+
+        except Exception as e:
+            print(f"⚠️  Failed to load providers: {e}")
+            print("ℹ️  Continuing with basic functionality...")
 
     except Exception as e:
-        print(f"❌ Error checking database: {e}")
+        print(f"❌ Error during startup: {e}")
 
     yield
 

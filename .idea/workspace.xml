@@ -4,18 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Перенес правильную бд">
-      <change afterPath="$PROJECT_DIR$/app/api/v1/schemas/chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/providers/mock_client.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/providers/ollama_client.py" afterDir="false" />
+    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Сделал запрос к провайдеру (правда ключ от OpenAI заблокали)">
+      <change afterPath="$PROJECT_DIR$/app/api/v1/schemas/base.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/providers/factory.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/providers/registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/deps.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/deps.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/chat_simple.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/schemas/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/gemini_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/gemini_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/mock_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/mock_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/ollama_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/ollama_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/core/providers/openai_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/openai_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/session.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/init_db.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,23 +66,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python tests.Python tests in test_db.py.executor": "Run",
-    "Python.check_db.executor": "Run",
-    "Python.create.executor": "Run",
-    "Python.init_db.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.test_setup.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/dmitr/PycharmProjects/education_project",
-    "settings.editor.selected.configurable": "com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python tests.Python tests in test_db.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python.check_db.executor&quot;: &quot;Run&quot;,
+    &quot;Python.create.executor&quot;: &quot;Run&quot;,
+    &quot;Python.init_db.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_setup.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/dmitr/PycharmProjects/education_project&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\dmitr\PycharmProjects\education_project\ai_gateway_framework" />
@@ -163,7 +177,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764715811180</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Сделал запрос к провайдеру (правда ключ от OpenAI заблокали)">
+      <option name="closed" value="true" />
+      <created>1764719244194</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1764719244194</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -184,6 +206,7 @@
     <MESSAGE value="Создал архитектуру, начально настроил docker и poetry" />
     <MESSAGE value="Настроил работу бд" />
     <MESSAGE value="Перенес правильную бд" />
-    <option name="LAST_COMMIT_MESSAGE" value="Перенес правильную бд" />
+    <MESSAGE value="Сделал запрос к провайдеру (правда ключ от OpenAI заблокали)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Сделал запрос к провайдеру (правда ключ от OpenAI заблокали)" />
   </component>
 </project>

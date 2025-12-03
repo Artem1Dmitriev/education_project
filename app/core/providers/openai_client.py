@@ -1,23 +1,43 @@
 # app/core/providers/openai_client.py
 import openai
-from typing import Optional, List, Dict, Any
-from app.core.config import settings
+from openai import AsyncOpenAI
+from typing import List, Dict, Any, Optional
+import logging
+from .base import BaseProvider, ProviderResponse
+
+logger = logging.getLogger(__name__)
 
 
-class OpenAIClient:
-    def __init__(self):
-        self.api_key = settings.OPENAI_API_KEY
-        self.client = openai.AsyncOpenAI(api_key=self.api_key)
+class OpenAIProvider(BaseProvider):
+    """Провайдер для OpenAI API"""
+
+    @property
+    def provider_name(self) -> str:
+        return "OpenAI"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if self.api_key:
+            self.client = AsyncOpenAI(
+                api_key=self.api_key,
+                base_url=self.base_url,
+                timeout=self.timeout
+            )
+        else:
+            self.client = None
+            logger.warning("OpenAI API key not configured")
 
     async def chat_completion(
             self,
             messages: List[Dict[str, str]],
-            model: str = "gpt-4o",
+            model: str,
             temperature: float = 0.7,
             max_tokens: Optional[int] = None,
             **kwargs
-    ) -> Dict[str, Any]:
-        """Отправка запроса в OpenAI API"""
+    ) -> ProviderResponse:
+        if not self.client:
+            raise ValueError("OpenAI API key not configured")
+
         try:
             response = await self.client.chat.completions.create(
                 model=model,
@@ -27,17 +47,16 @@ class OpenAIClient:
                 **kwargs
             )
 
-            return {
-                "content": response.choices[0].message.content,
-                "model_used": response.model,
-                "finish_reason": response.choices[0].finish_reason,
-                "input_tokens": response.usage.prompt_tokens,
-                "output_tokens": response.usage.completion_tokens,
-                "total_tokens": response.usage.total_tokens,
-            }
+            return ProviderResponse(
+                content=response.choices[0].message.content,
+                model_used=response.model,
+                provider_name=self.provider_name,
+                input_tokens=response.usage.prompt_tokens,
+                output_tokens=response.usage.completion_tokens,
+                finish_reason=response.choices[0].finish_reason,
+                raw_response=response.dict()
+            )
+
         except Exception as e:
+            logger.error(f"OpenAI API error: {e}")
             raise Exception(f"OpenAI API error: {str(e)}")
-
-
-# Создаем синглтон
-openai_client = OpenAIClient()

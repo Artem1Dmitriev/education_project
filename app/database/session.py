@@ -1,3 +1,4 @@
+# app/database/session.py
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.pool import NullPool
@@ -54,8 +55,26 @@ async def check_db_connection():
     try:
         from sqlalchemy import text  # Локальный импорт
         async with engine.connect() as conn:
-            await conn.execute(text("SELECT 1"))
+            result = await conn.execute(text("""
+                                SELECT EXISTS(
+                                    SELECT 1 FROM information_schema.schemata 
+                                    WHERE schema_name = 'ai_framework'
+                                )
+                            """))
+            schema_exists = result.scalar()
+
+            if not schema_exists:
+                print(
+                    "⚠️  Schema 'ai_framework' not found. You need to run: python scripts/create_database_structure.py")
+            else:
+                print("✅ Schema 'ai_framework' exists")
+
+                # Проверяем основные таблицы
+                result = await conn.execute(
+                    text("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ai_framework'"))
+                table_count = result.scalar()
+                print(f"📊 Found {table_count} tables in ai_framework schema")
         return True
     except Exception as e:
-        print(f"❌ Database connection failed: {e}")
+        print(f"❌ Error checking database: {e}")
         return False

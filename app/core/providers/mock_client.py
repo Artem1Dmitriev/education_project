@@ -1,44 +1,44 @@
 # app/core/providers/mock_client.py
+import asyncio
 import random
-import asyncio  # <-- ДОБАВЬТЕ ЭТОТ ИМПОРТ!
-from typing import Optional, List, Dict, Any
 import time
+from typing import List, Dict, Optional
+from .base import BaseProvider, ProviderResponse
 
 
-class MockClient:
-    """Мок-клиент для тестирования без реальных API"""
+class MockProvider(BaseProvider):
+    """Mock провайдер для тестирования"""
 
-    def __init__(self):
+    @property
+    def provider_name(self) -> str:
+        return "MockAI"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.responses = [
             "Привет! Я тестовый AI ассистент. Как я могу помочь?",
             "Это тестовый ответ для демонстрации работы системы.",
             "Запрос успешно обработан. В реальной системе здесь был бы ответ от нейросети.",
             "Система работает корректно. Вы можете протестировать различные функции.",
             "Добро пожаловать в AI Gateway Framework! Все системы функционируют нормально.",
-            "На основе вашего запроса я сгенерировал тестовый ответ. В реальной системе это был бы ответ от нейросети OpenAI, Anthropic или другой модели.",
-            "Это демонстрационный ответ, который показывает, что система маршрутизации запросов работает корректно.",
-            "Ваш запрос был обработан успешно. Токены посчитаны, ответ сохранен в базу данных.",
-            "Тестовая модель 'mock-model' обработала ваш запрос. В продакшене здесь был бы ответ от GPT-4, Claude или другой модели.",
-            "В AI Gateway Framework используется интеллектуальный роутинг для выбора оптимальной модели под ваш запрос."
         ]
 
     async def chat_completion(
             self,
             messages: List[Dict[str, str]],
-            model: str = "mock-model",
+            model: str,
             temperature: float = 0.7,
             max_tokens: Optional[int] = None,
             **kwargs
-    ) -> Dict[str, Any]:
+    ) -> ProviderResponse:
         """Возвращает мок-ответ для тестирования"""
         # Имитируем задержку сети
         await asyncio.sleep(random.uniform(0.1, 0.5))
 
         last_message = messages[-1]["content"] if messages else ""
-
-        # Генерируем "умный" ответ на основе ввода
         lower_msg = last_message.lower()
 
+        # Генерируем "умный" ответ
         if "привет" in lower_msg:
             response = "Привет! Рад вас видеть в AI Gateway Framework!"
         elif "погод" in lower_msg:
@@ -54,20 +54,20 @@ class MockClient:
         else:
             response = random.choice(self.responses)
 
-        # Эмулируем подсчет токенов (примерно 1 токен = 0.75 слова на английском)
+        # Эмулируем подсчет токенов
         all_text = " ".join([msg["content"] for msg in messages])
         input_tokens = int(len(all_text.split()) * 0.75)
         output_tokens = int(len(response.split()) * 0.75)
 
-        return {
-            "content": response,
-            "model_used": model,
-            "finish_reason": "stop",
-            "input_tokens": max(1, input_tokens),
-            "output_tokens": max(1, output_tokens),
-            "total_tokens": max(2, input_tokens + output_tokens),
-        }
+        return ProviderResponse(
+            content=response,
+            model_used=model,
+            provider_name=self.provider_name,
+            input_tokens=max(1, input_tokens),
+            output_tokens=max(1, output_tokens),
+            finish_reason="stop"
+        )
 
-
-# Создаем синглтон
-mock_client = MockClient()
+    async def health_check(self) -> bool:
+        """Mock всегда здоров"""
+        return True

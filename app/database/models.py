@@ -1,3 +1,4 @@
+# app/database/models.py
 from sqlalchemy import (
     Column, String, DateTime, Boolean, Integer, Numeric, Text,
     ForeignKey, BigInteger, CheckConstraint, UniqueConstraint, Index,

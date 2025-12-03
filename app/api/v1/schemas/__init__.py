@@ -1,3 +1,4 @@
+# app/api/v1/schemas/__init__.py
 from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 from uuid import UUID
