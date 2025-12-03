@@ -13,9 +13,9 @@ from .base import (
 from .users import *
 from .chat import *
 from .providers import *
-from .request import *
+from .requests import *
 from .health import *
-
+from .responses import *
 # Для обратной совместимости - экспорт всех классов
 __all__ = [
     # Базовые
@@ -51,4 +51,9 @@ __all__ = [
     'HealthCheckResponse',
     'DatabaseHealthResponse',
     'TableHealthResponse',
+    # Responses
+    'ResponseBase',
+    'ResponseCreate',
+    'ResponseUpdate',
+    'ResponseResponse'
 ]

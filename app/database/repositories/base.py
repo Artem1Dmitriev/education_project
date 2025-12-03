@@ -1,4 +1,3 @@
-# app/database/repositories/base.py
 from typing import Generic, TypeVar, Type, Optional, List, Any, Dict, Union
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete, and_, or_
@@ -221,3 +220,15 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """Проверить существование записи"""
         obj = await self.get(**filters)
         return obj is not None
+
+    async def begin_transaction(self):
+        """Начать транзакцию"""
+        await self.session.begin()
+
+    async def commit_transaction(self):
+        """Зафиксировать транзакцию"""
+        await self.session.commit()
+
+    async def rollback_transaction(self):
+        """Откатить транзакцию"""
+        await self.session.rollback()

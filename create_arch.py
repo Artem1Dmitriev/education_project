@@ -33,7 +33,7 @@ def create_empty_structure():
         "app/api/v1/endpoints/admin.py",
         "app/api/v1/endpoints/analytics.py",
         "app/api/v1/schemas/__init__.py",
-        "app/api/v1/schemas/request.py",
+        "app/api/v1/schemas/requests.py",
         "app/api/v1/schemas/response.py",
         "app/api/v1/schemas/file.py",
 

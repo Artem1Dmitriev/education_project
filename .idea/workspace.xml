@@ -4,21 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="настроил провайдеров">
-      <change afterPath="$PROJECT_DIR$/app/schemas/request.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/schemas/users.py" afterDir="false" />
+    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Перенес схемы для оптимизации">
+      <change afterPath="$PROJECT_DIR$/app/schemas/responses.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/chat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/file.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/health.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/schemas/response.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/providers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/database/repositories/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_arch.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_arch.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,7 +176,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764735595873</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Перенес схемы для оптимизации">
+      <option name="closed" value="true" />
+      <created>1764737446685</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1764737446685</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -206,6 +207,7 @@
     <MESSAGE value="Перенес правильную бд" />
     <MESSAGE value="Сделал запрос к провайдеру (правда ключ от OpenAI заблокали)" />
     <MESSAGE value="настроил провайдеров" />
-    <option name="LAST_COMMIT_MESSAGE" value="настроил провайдеров" />
+    <MESSAGE value="Перенес схемы для оптимизации" />
+    <option name="LAST_COMMIT_MESSAGE" value="Перенес схемы для оптимизации" />
   </component>
 </project>
