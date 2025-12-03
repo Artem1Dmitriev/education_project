@@ -2,8 +2,6 @@
 import uuid
 from typing import Dict, List, Optional
 from dataclasses import dataclass
-from datetime import datetime
-import asyncio
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,10 +11,9 @@ logger = logging.getLogger(__name__)
 class ProviderConfig:
     """Конфигурация провайдера из БД"""
     provider_id: uuid.UUID
-    name: str  # "OpenAI", "MockAI", etc
+    name: str
     base_url: str
     auth_type: str
-    api_key: Optional[str] = None  # Будем получать из настроек или api_keys таблицы
     max_requests_per_minute: int = 60
     retry_count: int = 3
     timeout_seconds: int = 30
@@ -28,7 +25,7 @@ class ModelConfig:
     """Конфигурация модели из БД"""
     model_id: uuid.UUID
     provider_id: uuid.UUID
-    name: str  # "gpt-4o", "mock-model", etc
+    name: str
     context_window: int = 8192
     max_output_tokens: Optional[int] = None
     input_price_per_1k: float = 0.0
@@ -39,24 +36,19 @@ class ModelConfig:
 
 
 class ProviderRegistry:
-    """Реестр провайдеров и моделей (кэш в памяти)"""
-
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+    """
+    Registry - только для хранения конфигурации (без бизнес-логики)
+    Single Responsibility: управление данными о провайдерах и моделях
+    """
 
     def __init__(self):
-        if not hasattr(self, '_initialized'):
-            self.providers: Dict[str, ProviderConfig] = {}  # name -> config
-            self.models: Dict[str, ModelConfig] = {}  # model_name -> config
-            self.provider_models: Dict[str, List[str]] = {}  # provider_name -> [model_names]
-            self._initialized = False
+        self.providers: Dict[str, ProviderConfig] = {}
+        self.models: Dict[str, ModelConfig] = {}
+        self.provider_models: Dict[str, List[str]] = {}
+        self._initialized = False
 
     async def load_from_database(self, db):
-        """Загрузить все данные из БД один раз"""
+        """Загрузить конфигурацию из БД"""
         from sqlalchemy import text
 
         try:
@@ -70,6 +62,9 @@ class ProviderRegistry:
                 WHERE is_active = true
                 """)
             )
+
+            self.providers.clear()
+            self.provider_models.clear()
 
             for row in result:
                 provider = ProviderConfig(
@@ -99,6 +94,7 @@ class ProviderRegistry:
                 """)
             )
 
+            self.models.clear()
             for row in result:
                 model = ModelConfig(
                     model_id=row.model_id,
@@ -123,50 +119,59 @@ class ProviderRegistry:
             raise
 
     def get_provider_config(self, provider_name: str) -> Optional[ProviderConfig]:
-        """Получить конфиг провайдера по имени"""
+        """Получить конфигурацию провайдера"""
         return self.providers.get(provider_name)
 
     def get_model_config(self, model_name: str) -> Optional[ModelConfig]:
-        """Получить конфиг модели по имени"""
+        """Получить конфигурацию модели"""
         return self.models.get(model_name)
 
-    def get_provider_for_model(self, model_name: str) -> Optional[ProviderConfig]:
-        """Найти провайдера для модели"""
-        model_config = self.get_model_config(model_name)
+    def get_provider_name_for_model(self, model_name: str) -> Optional[str]:
+        """Получить имя провайдера для модели"""
+        model_config = self.models.get(model_name)
         if not model_config:
             return None
 
-        # Находим провайдера по provider_id
-        for provider in self.providers.values():
+        for provider_name, provider in self.providers.items():
             if provider.provider_id == model_config.provider_id:
-                return provider
+                return provider_name
         return None
 
     def list_providers(self) -> List[Dict]:
-        """Список всех провайдеров с моделями"""
-        result = []
-        for provider_name, provider in self.providers.items():
-            result.append({
+        """Список всех провайдеров с моделями (только данные)"""
+        return [
+            {
                 "name": provider_name,
                 "models": self.provider_models.get(provider_name, []),
                 "model_count": len(self.provider_models.get(provider_name, [])),
                 "is_active": provider.is_active
-            })
-        return result
+            }
+            for provider_name, provider in self.providers.items()
+        ]
 
     def list_models(self) -> List[Dict]:
-        """Список всех моделей"""
-        result = []
-        for model_name, model in self.models.items():
-            provider = self.get_provider_for_model(model_name)
-            result.append({
+        """Список всех моделей (только данные)"""
+        return [
+            {
                 "name": model_name,
-                "provider": provider.name if provider else "Unknown",
+                "provider": self.get_provider_name_for_model(model_name) or "Unknown",
                 "context_window": model.context_window,
                 "is_available": model.is_available
-            })
-        return result
+            }
+            for model_name, model in self.models.items()
+        ]
+
+    def is_loaded(self) -> bool:
+        """Проверить, загружены ли данные"""
+        return self._initialized
+
+    def clear(self):
+        """Очистить реестр (для тестов)"""
+        self.providers.clear()
+        self.models.clear()
+        self.provider_models.clear()
+        self._initialized = False
 
 
-# Глобальный экземпляр реестра
+# Глобальный экземпляр реестра (Singleton)
 registry = ProviderRegistry()

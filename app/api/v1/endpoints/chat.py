@@ -1,5 +1,4 @@
-# app/api/v1/endpoints/chat.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 from datetime import datetime
@@ -10,11 +9,23 @@ import logging
 from app.database.session import get_db
 from app.database.repositories import get_repository
 from app.schemas import ChatRequest, ChatResponse, SuccessResponse, ErrorResponse
-from app.core.providers.factory import provider_factory
-from app.core.providers.registry import registry
+from app.core.providers import registry
+from app.core.providers.service import ProviderService
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 logger = logging.getLogger(__name__)
+
+
+# Dependency для получения сервиса провайдеров
+async def get_provider_service(request: Request) -> ProviderService:
+    """Получить сервис провайдеров из состояния приложения"""
+    service = request.app.state.provider_service
+    if not service:
+        raise HTTPException(
+            status_code=503,
+            detail="Provider service not initialized. Please check if database is connected and providers are loaded."
+        )
+    return service
 
 
 def calculate_prompt_hash(messages: list) -> str:
@@ -33,7 +44,7 @@ async def save_chat_to_database(
         max_tokens: int = None,
         endpoint: str = "/api/v1/chat"
 ) -> dict:
-    """Сохранить chat запрос и ответ в БД"""
+    """Сохранить chat запрос и ответ в БД через репозитории"""
     try:
         start_time = time.time()
 
@@ -105,9 +116,10 @@ async def save_chat_to_database(
 @router.post("", response_model=ChatResponse)
 async def chat(
         request: ChatRequest,
-        db: AsyncSession = Depends(get_db)
+        db: AsyncSession = Depends(get_db),
+        provider_service: ProviderService = Depends(get_provider_service)
 ):
-    """Основной chat endpoint"""
+    """Основной chat endpoint с использованием ProviderService"""
     start_time = time.time()
 
     try:
@@ -119,12 +131,13 @@ async def chat(
                 detail=f"Model '{request.model}' not found. Available models: {list(registry.models.keys())}"
             )
 
-        # 2. Получаем провайдера для модели
-        provider = provider_factory.get_provider_for_model(request.model)
+        # 2. Получаем провайдера для модели через фабрику из сервиса
+        provider = provider_service.factory.get_provider_for_model(request.model)
         if not provider:
             raise HTTPException(
                 status_code=503,
-                detail=f"Provider for model '{request.model}' is not available"
+                detail=f"Provider for model '{request.model}' is not available. "
+                       f"Possible reasons: API key not configured, provider is inactive, or network issue."
             )
 
         # 3. Конвертируем сообщения
@@ -178,17 +191,29 @@ async def chat(
 
 
 @router.get("/providers")
-async def list_providers():
+async def list_providers(request: Request):
     """Получить список провайдеров и моделей"""
+    # Проверяем, инициализирован ли сервис
+    if not hasattr(request.app.state, 'provider_service') or not request.app.state.provider_service:
+        raise HTTPException(
+            status_code=503,
+            detail="Provider service not initialized"
+        )
+
+    provider_service = request.app.state.provider_service
+    status = provider_service.get_provider_status()
+
     return SuccessResponse(
         success=True,
         message="Providers list retrieved successfully",
         data={
             "providers": registry.list_providers(),
             "models": registry.list_models(),
+            "status": status,
             "counts": {
                 "providers": len(registry.providers),
-                "models": len(registry.models)
+                "models": len(registry.models),
+                "cached_instances": len(provider_service.factory.get_cached_providers())
             }
         }
     )
@@ -203,6 +228,86 @@ async def list_models():
         message="Models list retrieved successfully",
         data={
             "models": models,
-            "count": len(models)
+            "count": len(models),
+            "available_models": [model["name"] for model in models if model.get("is_available", True)]
         }
     )
+
+
+@router.get("/health")
+async def chat_health_check(request: Request):
+    """Проверка здоровья системы чата"""
+    try:
+        # Проверяем, инициализирован ли сервис
+        if not hasattr(request.app.state, 'provider_service') or not request.app.state.provider_service:
+            return {
+                "status": "degraded",
+                "chat_service": "not_initialized",
+                "database": "unknown",
+                "providers": "not_loaded",
+                "message": "Provider service not initialized. Database might be unavailable."
+            }
+
+        # Проверяем реестр
+        registry_loaded = registry.is_loaded() if hasattr(registry, 'is_loaded') else True
+
+        # Проверяем здоровье провайдеров (асинхронно)
+        provider_service = request.app.state.provider_service
+        health_results = await provider_service.health_check()
+
+        healthy_count = sum(1 for v in health_results.values() if v)
+        unhealthy_providers = [name for name, healthy in health_results.items() if not healthy]
+
+        overall_status = "healthy" if healthy_count == len(health_results) else "degraded"
+
+        return {
+            "status": overall_status,
+            "chat_service": "operational",
+            "database": "connected" if registry_loaded else "disconnected",
+            "providers": {
+                "total": len(health_results),
+                "healthy": healthy_count,
+                "unhealthy": len(unhealthy_providers),
+                "unhealthy_list": unhealthy_providers,
+                "details": health_results
+            },
+            "cache_status": {
+                "cached_providers": provider_service.factory.get_cached_providers(),
+                "cache_size": len(provider_service.factory.get_cached_providers())
+            }
+        }
+
+    except Exception as e:
+        logger.error(f"Chat health check failed: {e}")
+        return {
+            "status": "unhealthy",
+            "chat_service": "error",
+            "database": "unknown",
+            "providers": "error",
+            "error": str(e)
+        }
+
+
+@router.get("/available-models")
+async def get_available_models():
+    """Получить только доступные модели"""
+    models = registry.list_models()
+    available_models = [
+        {
+            "name": model["name"],
+            "provider": model["provider"],
+            "context_window": model.get("context_window", 8192),
+            "type": model.get("type", "text"),
+            "pricing": {
+                "input": model.get("input_price_per_1k", 0.0),
+                "output": model.get("output_price_per_1k", 0.0)
+            } if "input_price_per_1k" in model else None
+        }
+        for model in models if model.get("is_available", True)
+    ]
+
+    return {
+        "success": True,
+        "count": len(available_models),
+        "models": available_models
+    }
