@@ -1,14 +1,15 @@
+# app/api/v1/endpoints/chat.py
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 from datetime import datetime
 import time
-import hashlib
 import logging
+import asyncio
 
 from app.database.session import get_db
 from app.database.repositories import get_repository
-from app.schemas import ChatRequest, ChatResponse, SuccessResponse, ErrorResponse
+from app.schemas import ChatRequest, ChatResponse, SuccessResponse
 from app.core.providers import registry
 from app.core.providers.service import ProviderService
 
@@ -29,9 +30,37 @@ async def get_provider_service(request: Request) -> ProviderService:
 
 
 def calculate_prompt_hash(messages: list) -> str:
-    """Вычисляем хеш промпта для кеширования"""
-    text_repr = str(sorted([(m.get("role"), m.get("content")) for m in messages]))
-    return hashlib.sha256(text_repr.encode()).hexdigest()
+    """
+    Вычисляем хеш промпта с нормализацией и версионированием
+
+    Проблемы старой версии:
+    1. Чувствительность к пробелам: "hello" vs "hello "
+    2. Чувствительность к порядку ключей в dict
+    3. Нет версии алгоритма
+    """
+    import hashlib
+    import json
+
+    # Нормализуем каждое сообщение
+    normalized_messages = []
+    for msg in messages:
+        normalized_msg = {
+            "role": msg.get("role", "").strip().lower(),
+            "content": msg.get("content", "").strip(),
+        }
+        # Сортируем ключи для консистентности
+        normalized_messages.append(
+            json.dumps(normalized_msg, sort_keys=True, separators=(',', ':'))
+        )
+
+    # Сортируем сообщения для консистентности
+    normalized_messages.sort()
+
+    # Добавляем версию алгоритма
+    text_repr = f"v1:{':'.join(normalized_messages)}"
+
+    # Используем blake2s - быстрее чем SHA256 и криптографически безопасен
+    return hashlib.blake2s(text_repr.encode(), digest_size=16).hexdigest()
 
 
 async def save_chat_to_database(
@@ -113,6 +142,7 @@ async def save_chat_to_database(
         raise
 
 
+
 @router.post("", response_model=ChatResponse)
 async def chat(
         request: ChatRequest,
@@ -123,6 +153,19 @@ async def chat(
     start_time = time.time()
 
     try:
+        if not request.messages:
+            raise HTTPException(status_code=400, detail="Messages cannot be empty")
+
+        if len(request.messages) > 100:
+            raise HTTPException(status_code=400, detail="Too many messages (max 100)")
+
+        for msg in request.messages:
+            if len(msg.content) > 10000:
+                raise HTTPException(status_code=400, detail=f"Message too long (max 10000 chars)")
+
+        if request.temperature is not None and (request.temperature < 0 or request.temperature > 2):
+            raise HTTPException(status_code=400, detail="Temperature must be between 0 and 2")
+
         # 1. Проверяем, есть ли модель в реестре
         model_config = registry.get_model_config(request.model)
         if not model_config:
@@ -139,20 +182,31 @@ async def chat(
                 detail=f"Provider for model '{request.model}' is not available. "
                        f"Possible reasons: API key not configured, provider is inactive, or network issue."
             )
+        # Глобальный timeout для LLM запроса (30 секунд)
+        timeout_seconds = getattr(provider, 'timeout', 30)
+        try:
+            # 3. Конвертируем сообщения
+            messages = [{"role": msg.role, "content": msg.content} for msg in request.messages]
 
-        # 3. Конвертируем сообщения
-        messages = [{"role": msg.role, "content": msg.content} for msg in request.messages]
+            # 4. Отправляем запрос
+            logger.info(f"Sending request to {provider.provider_name}, model: {request.model}")
 
-        # 4. Отправляем запрос
-        logger.info(f"Sending request to {provider.provider_name}, model: {request.model}")
-
-        provider_response = await provider.chat_completion(
-            messages=messages,
-            model=request.model,
-            temperature=request.temperature,
-            max_tokens=request.max_tokens,
-            stream=request.stream
-        )
+            provider_response = await asyncio.wait_for(
+                provider.chat_completion(
+                    messages=messages,
+                    model=request.model,
+                    temperature=request.temperature,
+                    max_tokens=request.max_tokens,
+                    stream=request.stream
+                ),
+                timeout=timeout_seconds
+            )
+        except asyncio.TimeoutError:
+            logger.error(f"Timeout for provider {provider.provider_name}")
+            raise HTTPException(
+                status_code=504,
+                detail=f"Provider {provider.provider_name} timeout after {timeout_seconds} seconds"
+            )
 
         # 5. Сохраняем в БД
         save_result = await save_chat_to_database(

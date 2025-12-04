@@ -1,8 +1,10 @@
+# app/api/v1/endpoints/health.py
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 from datetime import datetime
 import logging
+import re
 
 from app.database.session import get_db, check_db_connection
 from app.schemas import (
@@ -70,8 +72,16 @@ async def check_tables(db: AsyncSession = Depends(get_db)):
     ]
 
     results = []
-
+    safe_tables = []
     for table_name in tables_to_check:
+        # Допустим только буквы, цифры и подчеркивания
+        import re
+        if not re.match(r'^[a-z_][a-z0-9_]*$', table_name, re.IGNORECASE):
+            logger.warning(f"Skipping potentially unsafe table name: {table_name}")
+            continue
+        safe_tables.append(table_name)
+
+    for table_name in safe_tables:
         try:
             # Пробуем прочитать одну запись
             query = text(f"SELECT COUNT(*) as count FROM ai_framework.{table_name} LIMIT 1")

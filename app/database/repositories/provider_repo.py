@@ -1,3 +1,4 @@
+# app/database/repositories/provider.py
 from app.database.models import Provider
 from app.schemas import ProviderCreate, ProviderUpdate
 from .base import BaseRepository

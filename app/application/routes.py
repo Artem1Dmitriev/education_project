@@ -1,4 +1,4 @@
-# app/api/routes.py
+# app/application/routes.py
 from fastapi import FastAPI
 from app.application.config import settings
 from app.api.v1.endpoints import health, users, chat

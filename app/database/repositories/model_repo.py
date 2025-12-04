@@ -1,3 +1,4 @@
+# app/database/repositories/model.py
 from app.database.models import AIModel
 from app.schemas import ModelCreate, ModelUpdate
 from .base import BaseRepository

@@ -4,18 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Оптимизировал repo">
-      <change afterPath="$PROJECT_DIR$/app/application/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/application/app_factory.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/application/handlers/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/application/handlers/root.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/application/lifespan.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/application/routes.py" afterDir="false" />
+    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Вынес логику из main">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/providers/factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/factory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/session.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/app_factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/app_factory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/model_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/model_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/request_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/request_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/response_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/response_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/user_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/user_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/chat.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -205,7 +208,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764817182083</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Вынес логику из main">
+      <option name="closed" value="true" />
+      <created>1764820874829</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1764820874829</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -231,6 +242,7 @@
     <MESSAGE value="Перенес схемы для оптимизации" />
     <MESSAGE value="Создал responses схему, для оптимизации дублирования" />
     <MESSAGE value="Оптимизировал repo" />
-    <option name="LAST_COMMIT_MESSAGE" value="Оптимизировал repo" />
+    <MESSAGE value="Вынес логику из main" />
+    <option name="LAST_COMMIT_MESSAGE" value="Вынес логику из main" />
   </component>
 </project>

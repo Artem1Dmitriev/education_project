@@ -1,3 +1,6 @@
+# app/database/repositories/response.py
+from sqlalchemy import text
+
 from app.database.models import Response
 from app.schemas import ResponseCreate, ResponseUpdate
 from .base import BaseRepository

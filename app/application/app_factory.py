@@ -1,4 +1,4 @@
-# app/core/app_factory.py
+# app/application/app_factory.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.application.config import settings
