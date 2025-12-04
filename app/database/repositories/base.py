@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar, Type, Optional, List, Any, Dict, Union
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update, delete, and_, or_
+from sqlalchemy import select, update, delete, and_
 from sqlalchemy.sql import text
 from pydantic import BaseModel
 from uuid import UUID
@@ -14,7 +14,7 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
 
 class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    """Базовый репозиторий с CRUD операциями для существующих таблиц"""
+    """Базовый репозиторий с CRUD операциями"""
 
     def __init__(self, model: Type[ModelType], session: AsyncSession):
         self.model = model
@@ -25,7 +25,6 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         try:
             query = select(self.model)
 
-            # Строим условия WHERE
             conditions = []
             for key, value in filters.items():
                 if hasattr(self.model, key):
@@ -44,7 +43,6 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get_by_id(self, id: Union[int, str, UUID]) -> Optional[ModelType]:
         """Получить запись по первичному ключу"""
         try:
-            # Определяем primary key
             primary_key = None
             for column in self.model.__table__.columns:
                 if column.primary_key:
@@ -71,7 +69,6 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         try:
             query = select(self.model)
 
-            # Применяем фильтры
             for key, value in filters.items():
                 if hasattr(self.model, key):
                     column = getattr(self.model, key)
@@ -80,12 +77,10 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                     else:
                         query = query.where(column == value)
 
-            # Сортировка
             if order_by and hasattr(self.model, order_by):
                 column = getattr(self.model, order_by)
                 query = query.order_by(column.desc() if desc else column.asc())
 
-            # Пагинация
             if limit:
                 query = query.limit(limit)
             if skip:
@@ -133,7 +128,6 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             self.session.add_all(db_objs)
             await self.session.commit()
 
-            # Обновляем объекты
             for obj in db_objs:
                 await self.session.refresh(obj)
 
@@ -150,12 +144,10 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     ) -> Optional[ModelType]:
         """Обновить запись"""
         try:
-            # Получаем объект
             obj = await self.get_by_id(obj_id)
             if not obj:
                 return None
 
-            # Обновляем поля
             update_data = obj_in.dict(exclude_unset=True)
             for field, value in update_data.items():
                 if hasattr(obj, field):
@@ -189,7 +181,6 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         try:
             query = delete(self.model)
 
-            # Строим условия
             conditions = []
             for key, value in filters.items():
                 if hasattr(self.model, key):

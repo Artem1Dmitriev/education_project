@@ -5,12 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Создал responses схему, для оптимизации дублирования">
-      <change afterPath="$PROJECT_DIR$/app/core/providers/service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/database/repositories/model_repo.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/database/repositories/response_repo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/providers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/providers/factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/factory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/providers/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/request_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/request_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/user_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/user_repo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

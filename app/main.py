@@ -34,11 +34,6 @@ async def lifespan(app: FastAPI):
 
             # Выводим статистику реестра
             print(f"✅ ProviderRegistry loaded:")
-            print(f"   - Providers: {len(registry.providers)}")
-            print(f"   - Models: {len(registry.models)}")
-
-            for provider_name, models in registry.provider_models.items():
-                print(f"   - {provider_name}: {len(models)} models")
 
             # 3. Создаем сервис провайдеров с API ключами из настроек
             api_keys = {
