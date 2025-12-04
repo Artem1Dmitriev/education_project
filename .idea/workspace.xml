@@ -4,15 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Создал responses схему, для оптимизации дублирования">
-      <change afterPath="$PROJECT_DIR$/app/database/repositories/model_repo.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/database/repositories/response_repo.py" afterDir="false" />
+    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Оптимизировал repo">
+      <change afterPath="$PROJECT_DIR$/app/application/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/application/app_factory.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/application/handlers/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/application/handlers/root.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/application/lifespan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/application/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/request_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/request_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/user_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/user_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/factory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/session.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -69,6 +71,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\dmitr\PycharmProjects\ai-gateway-framework\app\application" />
       <recent name="C:\Users\dmitr\PycharmProjects\ai-gateway-framework\app\schemas" />
       <recent name="C:\Users\dmitr\PycharmProjects\education_project\ai_gateway_framework" />
       <recent name="C:\Users\dmitr\PycharmProjects\education_project\ai_gateway_framework\scripts" />
@@ -194,7 +197,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764738946386</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Оптимизировал repo">
+      <option name="closed" value="true" />
+      <created>1764817182083</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1764817182083</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -219,6 +230,7 @@
     <MESSAGE value="настроил провайдеров" />
     <MESSAGE value="Перенес схемы для оптимизации" />
     <MESSAGE value="Создал responses схему, для оптимизации дублирования" />
-    <option name="LAST_COMMIT_MESSAGE" value="Создал responses схему, для оптимизации дублирования" />
+    <MESSAGE value="Оптимизировал repo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Оптимизировал repo" />
   </component>
 </project>
