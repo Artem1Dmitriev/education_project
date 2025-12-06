@@ -72,7 +72,14 @@ class ProviderService:
             }
         }
 
-    def reload_registry(self, db):
-        """Перезагрузить реестр из БД"""
-        import asyncio
-        return asyncio.run(self.registry.load_from_database(db))
+    async def refresh_providers(self, db):
+        """Обновить провайдеров после изменения реестра"""
+        # Делегируем загрузку реестра
+        await self.registry.load_from_database(db)
+        self.factory.clear_cache()
+
+    async def close(self):
+        """Закрыть все провайдеры"""
+        for provider in self.factory._cache.values():
+            if hasattr(provider, 'close'):
+                await provider.close()

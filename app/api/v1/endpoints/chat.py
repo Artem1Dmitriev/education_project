@@ -1,350 +1,150 @@
 # app/api/v1/endpoints/chat.py
-from fastapi import APIRouter, Depends, HTTPException, Request
-from sqlalchemy.ext.asyncio import AsyncSession
-import uuid
 from datetime import datetime
-import time
+
+from fastapi import APIRouter, Depends, BackgroundTasks
 import logging
-import asyncio
 
 from app.database.session import get_db
-from app.database.repositories import get_repository
 from app.schemas import ChatRequest, ChatResponse, SuccessResponse
-from app.core.providers import registry
-from app.core.providers.service import ProviderService
+from app.application.deps import get_chat_service
+from app.core.chat.service import ChatService
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 logger = logging.getLogger(__name__)
 
 
-# Dependency для получения сервиса провайдеров
-async def get_provider_service(request: Request) -> ProviderService:
-    """Получить сервис провайдеров из состояния приложения"""
-    service = request.app.state.provider_service
-    if not service:
-        raise HTTPException(
-            status_code=503,
-            detail="Provider service not initialized. Please check if database is connected and providers are loaded."
-        )
-    return service
-
-
-def calculate_prompt_hash(messages: list) -> str:
-    """
-    Вычисляем хеш промпта с нормализацией и версионированием
-
-    Проблемы старой версии:
-    1. Чувствительность к пробелам: "hello" vs "hello "
-    2. Чувствительность к порядку ключей в dict
-    3. Нет версии алгоритма
-    """
-    import hashlib
-    import json
-
-    # Нормализуем каждое сообщение
-    normalized_messages = []
-    for msg in messages:
-        normalized_msg = {
-            "role": msg.get("role", "").strip().lower(),
-            "content": msg.get("content", "").strip(),
-        }
-        # Сортируем ключи для консистентности
-        normalized_messages.append(
-            json.dumps(normalized_msg, sort_keys=True, separators=(',', ':'))
-        )
-
-    # Сортируем сообщения для консистентности
-    normalized_messages.sort()
-
-    # Добавляем версию алгоритма
-    text_repr = f"v1:{':'.join(normalized_messages)}"
-
-    # Используем blake2s - быстрее чем SHA256 и криптографически безопасен
-    return hashlib.blake2s(text_repr.encode(), digest_size=16).hexdigest()
-
-
-async def save_chat_to_database(
-        db: AsyncSession,
-        messages: list,
-        model_name: str,
-        temperature: float,
-        provider_response,
-        user_id: uuid.UUID = None,
-        max_tokens: int = None,
-        endpoint: str = "/api/v1/chat"
-) -> dict:
-    """Сохранить chat запрос и ответ в БД через репозитории"""
-    try:
-        start_time = time.time()
-
-        # 1. Получаем данные модели из реестра
-        model_config = registry.get_model_config(model_name)
-        if not model_config:
-            raise ValueError(f"Model {model_name} not found in registry")
-
-        # 2. Проверяем user_id
-        user_id_to_save = None
-        if user_id:
-            user_repo = get_repository("user", db)
-            user = await user_repo.get_by_id(user_id)
-            if user:
-                user_id_to_save = user_id
-
-        # 3. Рассчитываем стоимость
-        input_cost = provider_response.input_tokens * model_config.input_price_per_1k / 1000
-        output_cost = provider_response.output_tokens * model_config.output_price_per_1k / 1000
-        total_cost = input_cost + output_cost
-
-        # 4. Подготавливаем текст запроса
-        input_text = "\n".join([f"{msg.get('role', 'user')}: {msg.get('content', '')}" for msg in messages])
-
-        # 5. Хеш промпта
-        prompt_hash = calculate_prompt_hash(messages)
-
-        # 6. Получаем репозиторий запросов
-        request_repo = get_repository("request", db)
-
-        # 7. Подготавливаем данные для сохранения
-        request_data = {
-            "request_id": uuid.uuid4(),
-            "user_id": user_id_to_save,
-            "model_id": model_config.model_id,
-            "prompt_hash": prompt_hash,
-            "input_text": input_text,
-            "input_tokens": provider_response.input_tokens,
-            "output_tokens": provider_response.output_tokens,
-            "total_cost": total_cost,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-            "timestamp": datetime.utcnow(),
-            "processing_time": int((time.time() - start_time) * 1000),
-            "endpoint": endpoint
-        }
-
-        response_data = {
-            "response_id": uuid.uuid4(),
-            "content": provider_response.content,
-            "finish_reason": provider_response.finish_reason,
-            "model_used": provider_response.model_used,
-            "provider_used": provider_response.provider_name,
-            "timestamp": datetime.utcnow()
-        }
-
-        # 8. Используем репозиторий для сохранения
-        result = await request_repo.create_with_response(request_data, response_data)
-
-        logger.info(f"Chat request saved via repository: {result['request_id']}")
-
-        return result
-
-    except Exception as e:
-        logger.error(f"Database save error: {e}")
-        raise
-
-
-
 @router.post("", response_model=ChatResponse)
 async def chat(
         request: ChatRequest,
-        db: AsyncSession = Depends(get_db),
-        provider_service: ProviderService = Depends(get_provider_service)
+        background_tasks: BackgroundTasks,
+        chat_service: ChatService = Depends(get_chat_service),
+        db=Depends(get_db)
 ):
-    """Основной chat endpoint с использованием ProviderService"""
-    start_time = time.time()
+    """
+    Основной chat endpoint
 
-    try:
-        if not request.messages:
-            raise HTTPException(status_code=400, detail="Messages cannot be empty")
+    Args:
+        request: Запрос чата
+        background_tasks: Фоновые задачи FastAPI
+        chat_service: Сервис обработки чата
+        db: Сессия БД
 
-        if len(request.messages) > 100:
-            raise HTTPException(status_code=400, detail="Too many messages (max 100)")
+    Returns:
+        ChatResponse
+    """
+    logger.info(f"Processing chat request for model: {request.model}")
 
-        for msg in request.messages:
-            if len(msg.content) > 10000:
-                raise HTTPException(status_code=400, detail=f"Message too long (max 10000 chars)")
+    # Можно вынести сохранение в фоновую задачу для ускорения ответа
+    response = await chat_service.process_chat_request(
+        request=request,
+        db=db,
+        user_id=request.user_id
+    )
 
-        if request.temperature is not None and (request.temperature < 0 or request.temperature > 2):
-            raise HTTPException(status_code=400, detail="Temperature must be between 0 and 2")
-
-        # 1. Проверяем, есть ли модель в реестре
-        model_config = registry.get_model_config(request.model)
-        if not model_config:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Model '{request.model}' not found. Available models: {list(registry.models.keys())}"
-            )
-
-        # 2. Получаем провайдера для модели через фабрику из сервиса
-        provider = provider_service.factory.get_provider_for_model(request.model)
-        if not provider:
-            raise HTTPException(
-                status_code=503,
-                detail=f"Provider for model '{request.model}' is not available. "
-                       f"Possible reasons: API key not configured, provider is inactive, or network issue."
-            )
-        # Глобальный timeout для LLM запроса (30 секунд)
-        timeout_seconds = getattr(provider, 'timeout', 30)
-        try:
-            # 3. Конвертируем сообщения
-            messages = [{"role": msg.role, "content": msg.content} for msg in request.messages]
-
-            # 4. Отправляем запрос
-            logger.info(f"Sending request to {provider.provider_name}, model: {request.model}")
-
-            provider_response = await asyncio.wait_for(
-                provider.chat_completion(
-                    messages=messages,
-                    model=request.model,
-                    temperature=request.temperature,
-                    max_tokens=request.max_tokens,
-                    stream=request.stream
-                ),
-                timeout=timeout_seconds
-            )
-        except asyncio.TimeoutError:
-            logger.error(f"Timeout for provider {provider.provider_name}")
-            raise HTTPException(
-                status_code=504,
-                detail=f"Provider {provider.provider_name} timeout after {timeout_seconds} seconds"
-            )
-
-        # 5. Сохраняем в БД
-        save_result = await save_chat_to_database(
-            db=db,
-            messages=messages,
-            model_name=request.model,
-            temperature=request.temperature,
-            provider_response=provider_response,
-            user_id=request.user_id,
-            max_tokens=request.max_tokens
-        )
-
-        total_time = int((time.time() - start_time) * 1000)
-
-        # 6. Возвращаем ответ
-        return ChatResponse(
-            response_id=save_result["response_id"],
-            request_id=save_result["request_id"],
-            content=provider_response.content,
-            model_used=provider_response.model_used,
-            provider_used=provider_response.provider_name,
-            input_tokens=provider_response.input_tokens,
-            output_tokens=provider_response.output_tokens,
-            total_cost=save_result["total_cost"],
-            processing_time_ms=total_time,
-            timestamp=datetime.utcnow(),
-            finish_reason=provider_response.finish_reason,
-            is_cached=False
-        )
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Chat error: {e}")
-        raise HTTPException(status_code=500, detail=f"Chat error: {str(e)}")
+    logger.info(f"Chat request completed: {response.request_id}")
+    return response
 
 
-@router.get("/providers")
-async def list_providers(request: Request):
-    """Получить список провайдеров и моделей"""
-    # Проверяем, инициализирован ли сервис
-    if not hasattr(request.app.state, 'provider_service') or not request.app.state.provider_service:
-        raise HTTPException(
-            status_code=503,
-            detail="Provider service not initialized"
-        )
+@router.get("/providers", response_model=SuccessResponse)
+async def list_providers(
+        chat_service: ChatService = Depends(get_chat_service)
+):
+    """Получить список провайдеров"""
+    from app.core.providers.registry import registry
 
-    provider_service = request.app.state.provider_service
-    status = provider_service.get_provider_status()
+    providers = registry.list_providers()
+    models = registry.list_models()
+
+    # Получаем статус провайдеров
+    provider_status = {}
+    if hasattr(chat_service.provider_service, 'get_provider_status'):
+        provider_status = chat_service.provider_service.get_provider_status()
 
     return SuccessResponse(
         success=True,
-        message="Providers list retrieved successfully",
+        message="Providers retrieved successfully",
         data={
-            "providers": registry.list_providers(),
-            "models": registry.list_models(),
-            "status": status,
+            "providers": providers,
+            "models": models,
+            "status": provider_status,
             "counts": {
-                "providers": len(registry.providers),
-                "models": len(registry.models),
-                "cached_instances": len(provider_service.factory.get_cached_providers())
+                "total_providers": len(providers),
+                "total_models": len(models),
+                "available_models": len([m for m in models if m.get("is_available", True)])
             }
         }
     )
 
 
-@router.get("/models")
+@router.get("/models", response_model=SuccessResponse)
 async def list_models():
     """Получить список моделей"""
+    from app.core.providers.registry import registry
+
     models = registry.list_models()
+    available_models = [
+        model for model in models
+        if model.get("is_available", True)
+    ]
+
     return SuccessResponse(
         success=True,
-        message="Models list retrieved successfully",
+        message="Models retrieved successfully",
         data={
+            "total_models": len(models),
+            "available_models": len(available_models),
             "models": models,
-            "count": len(models),
-            "available_models": [model["name"] for model in models if model.get("is_available", True)]
+            "available": available_models
         }
     )
 
 
 @router.get("/health")
-async def chat_health_check(request: Request):
+async def chat_health_check(
+        chat_service: ChatService = Depends(get_chat_service)
+):
     """Проверка здоровья системы чата"""
     try:
-        # Проверяем, инициализирован ли сервис
-        if not hasattr(request.app.state, 'provider_service') or not request.app.state.provider_service:
-            return {
-                "status": "degraded",
-                "chat_service": "not_initialized",
-                "database": "unknown",
-                "providers": "not_loaded",
-                "message": "Provider service not initialized. Database might be unavailable."
-            }
+        # Проверяем различные компоненты системы
+        health_checks = {}
 
-        # Проверяем реестр
-        registry_loaded = registry.is_loaded() if hasattr(registry, 'is_loaded') else True
+        # Проверка провайдеров
+        if hasattr(chat_service.provider_service, 'health_check'):
+            provider_health = await chat_service.provider_service.health_check()
+            health_checks["providers"] = provider_health
 
-        # Проверяем здоровье провайдеров (асинхронно)
-        provider_service = request.app.state.provider_service
-        health_results = await provider_service.health_check()
+        # Проверка репозиториев
+        health_checks["repositories"] = {
+            "request_repo": chat_service.request_repo is not None,
+            "user_repo": chat_service.user_repo is not None
+        }
 
-        healthy_count = sum(1 for v in health_results.values() if v)
-        unhealthy_providers = [name for name, healthy in health_results.items() if not healthy]
-
-        overall_status = "healthy" if healthy_count == len(health_results) else "degraded"
+        # Агрегируем статус
+        all_healthy = all(
+            all(v.values()) if isinstance(v, dict) else v
+            for v in health_checks.values()
+        )
 
         return {
-            "status": overall_status,
-            "chat_service": "operational",
-            "database": "connected" if registry_loaded else "disconnected",
-            "providers": {
-                "total": len(health_results),
-                "healthy": healthy_count,
-                "unhealthy": len(unhealthy_providers),
-                "unhealthy_list": unhealthy_providers,
-                "details": health_results
-            },
-            "cache_status": {
-                "cached_providers": provider_service.factory.get_cached_providers(),
-                "cache_size": len(provider_service.factory.get_cached_providers())
-            }
+            "status": "healthy" if all_healthy else "degraded",
+            "timestamp": datetime.utcnow().isoformat(),
+            "checks": health_checks
         }
 
     except Exception as e:
-        logger.error(f"Chat health check failed: {e}")
+        logger.error(f"Health check failed: {e}")
         return {
             "status": "unhealthy",
-            "chat_service": "error",
-            "database": "unknown",
-            "providers": "error",
-            "error": str(e)
+            "error": str(e),
+            "timestamp": datetime.utcnow().isoformat()
         }
 
 
-@router.get("/available-models")
+@router.get("/available-models", response_model=SuccessResponse)
 async def get_available_models():
     """Получить только доступные модели"""
+    from app.core.providers.registry import registry
+
     models = registry.list_models()
     available_models = [
         {
@@ -352,16 +152,21 @@ async def get_available_models():
             "provider": model["provider"],
             "context_window": model.get("context_window", 8192),
             "type": model.get("type", "text"),
+            "supports_streaming": model.get("supports_streaming", False),
             "pricing": {
                 "input": model.get("input_price_per_1k", 0.0),
                 "output": model.get("output_price_per_1k", 0.0)
-            } if "input_price_per_1k" in model else None
+            } if "input_price_per_1k" in model else None,
+            "rate_limits": model.get("rate_limits", {})
         }
         for model in models if model.get("is_available", True)
     ]
 
-    return {
-        "success": True,
-        "count": len(available_models),
-        "models": available_models
-    }
+    return SuccessResponse(
+        success=True,
+        message="Available models retrieved successfully",
+        data={
+            "count": len(available_models),
+            "models": available_models
+        }
+    )

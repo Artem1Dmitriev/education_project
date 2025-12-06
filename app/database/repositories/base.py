@@ -19,7 +19,11 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     def __init__(self, model: Type[ModelType], session: AsyncSession):
         self.model = model
-        self.session = session
+        self._session = session
+
+    @property
+    def session(self) -> AsyncSession:
+        return self._session
 
     async def get(self, **filters) -> Optional[ModelType]:
         """Получить одну запись по фильтрам"""

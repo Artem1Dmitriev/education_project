@@ -57,52 +57,52 @@ def get_repository(model_type: str, session):
     return repo_class(model_class, session)
 
 
-def get_repository_class(model_type: str):
-    """
-    Получить класс репозитория по типу модели
-
-    Args:
-        model_type: тип модели
-
-    Returns:
-        Класс репозитория
-    """
-    if model_type not in REPOSITORY_MAP:
-        raise ValueError(f"Unknown model type: {model_type}")
-
-    return REPOSITORY_MAP[model_type][0]
-
-
-def get_model_class(model_type: str):
-    """
-    Получить класс модели по типу модели
-
-    Args:
-        model_type: тип модели
-
-    Returns:
-        Класс SQLAlchemy модели
-    """
-    if model_type not in REPOSITORY_MAP:
-        raise ValueError(f"Unknown model type: {model_type}")
-
-    return REPOSITORY_MAP[model_type][1]
-
-
-def get_schemas(model_type: str):
-    """
-    Получить схемы Pydantic для модели
-
-    Args:
-        model_type: тип модели
-
-    Returns:
-        Словарь с схемами create и update
-    """
-    if model_type not in SCHEMA_MAP:
-        raise ValueError(f"Unknown model type: {model_type}")
-
-    return SCHEMA_MAP[model_type]
+# def get_repository_class(model_type: str):
+#     """
+#     Получить класс репозитория по типу модели
+#
+#     Args:
+#         model_type: тип модели
+#
+#     Returns:
+#         Класс репозитория
+#     """
+#     if model_type not in REPOSITORY_MAP:
+#         raise ValueError(f"Unknown model type: {model_type}")
+#
+#     return REPOSITORY_MAP[model_type][0]
+#
+#
+# def get_model_class(model_type: str):
+#     """
+#     Получить класс модели по типу модели
+#
+#     Args:
+#         model_type: тип модели
+#
+#     Returns:
+#         Класс SQLAlchemy модели
+#     """
+#     if model_type not in REPOSITORY_MAP:
+#         raise ValueError(f"Unknown model type: {model_type}")
+#
+#     return REPOSITORY_MAP[model_type][1]
+#
+#
+# def get_schemas(model_type: str):
+#     """
+#     Получить схемы Pydantic для модели
+#
+#     Args:
+#         model_type: тип модели
+#
+#     Returns:
+#         Словарь с схемами create и update
+#     """
+#     if model_type not in SCHEMA_MAP:
+#         raise ValueError(f"Unknown model type: {model_type}")
+#
+#     return SCHEMA_MAP[model_type]
 
 
 # Экспортируем все репозитории для прямого импорта
@@ -113,7 +113,7 @@ __all__ = [
     'RequestRepository',
     'ResponseRepository',
     'get_repository',
-    'get_repository_class',
-    'get_model_class',
-    'get_schemas',
+    # 'get_repository_class',
+    # 'get_model_class',
+    # 'get_schemas',
 ]

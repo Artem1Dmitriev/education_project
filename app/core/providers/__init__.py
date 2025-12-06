@@ -2,19 +2,14 @@
 Providers module - clean exports and facade
 """
 from .base import BaseProvider, ProviderResponse
-from .registry import ProviderRegistry, registry
+from .registry import create_registry
 from .factory import ProviderFactory
 from .service import ProviderService
 
-# Инициализируем глобальные зависимости
-def create_provider_factory(api_keys: dict = None) -> ProviderFactory:
-    """Создать фабрику провайдеров с внедренным реестром"""
-    return ProviderFactory(registry, api_keys)
 
-
-def create_provider_service(api_keys: dict = None) -> ProviderService:
+def create_provider_service(registry, api_keys: dict = None) -> ProviderService:
     """Создать сервис провайдеров"""
-    factory = create_provider_factory(api_keys)
+    factory = ProviderFactory(registry, api_keys)
     return ProviderService(registry, factory)
 
 
@@ -29,12 +24,9 @@ __all__ = [
     'BaseProvider',
     'ProviderResponse',
     # Components
-    'ProviderRegistry',
-    'ProviderFactory',
     'ProviderService',
     # Global instances
-    'registry',
-    'create_provider_factory',
+    'create_registry',
     'create_provider_service',
     # Provider implementations
     'MockProvider',

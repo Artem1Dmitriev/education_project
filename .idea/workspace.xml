@@ -4,21 +4,42 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Вынес логику из main">
+    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Поправил пакеты">
+      <change afterPath="$PROJECT_DIR$/app/application/deps.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/chat/calculation/cost.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/chat/service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/chat/summarization/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/chat/summarization/base.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/chat/summarization/post_summarizer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/chat/summarization/pre_summarizer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/exceptions/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/exceptions/base.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/exceptions/chat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/exceptions/middleware.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/validator/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/validator/base.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/validator/chat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/deps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/application/app_factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/app_factory.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/application/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/application/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/lifespan.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/lifespan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/cost_calculation/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/cost_calculation/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/calculation/tokenizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/summarization/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/calculation/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/summarization/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/factory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/summarization/post_summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/prompt/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/summarization/pre_summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/prompt/service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/database/repositories/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/database/repositories/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/model_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/model_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/request_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/request_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/response_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/response_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/user_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/user_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/schemas/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/chat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/session.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_arch.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_arch.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,6 +96,7 @@
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\dmitr\PycharmProjects\ai-gateway-framework\app\application" />
+      <recent name="C:\Users\dmitr\PycharmProjects\ai-gateway-framework\app\core\chat" />
       <recent name="C:\Users\dmitr\PycharmProjects\ai-gateway-framework\app\schemas" />
       <recent name="C:\Users\dmitr\PycharmProjects\education_project\ai_gateway_framework" />
       <recent name="C:\Users\dmitr\PycharmProjects\education_project\ai_gateway_framework\scripts" />
@@ -216,7 +238,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764820874829</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Поправил пакеты">
+      <option name="closed" value="true" />
+      <created>1764887245120</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1764887245120</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -243,6 +273,7 @@
     <MESSAGE value="Создал responses схему, для оптимизации дублирования" />
     <MESSAGE value="Оптимизировал repo" />
     <MESSAGE value="Вынес логику из main" />
-    <option name="LAST_COMMIT_MESSAGE" value="Вынес логику из main" />
+    <MESSAGE value="Поправил пакеты" />
+    <option name="LAST_COMMIT_MESSAGE" value="Поправил пакеты" />
   </component>
 </project>

@@ -70,4 +70,26 @@ class Settings(BaseSettings):
         extra = "allow"  # Разрешает дополнительные поля
 
 
+class ChatSettings(BaseSettings):
+    """Настройки чата"""
+
+    # Лимиты
+    MAX_MESSAGES: int = 100
+    MAX_MESSAGE_LENGTH: int = 10000
+    MIN_TEMPERATURE: float = 0.0
+    MAX_TEMPERATURE: float = 2.0
+
+    # Таймауты
+    PROVIDER_TIMEOUT: int = 30
+    DATABASE_TIMEOUT: int = 10
+
+    # Кэширование
+    ENABLE_CACHING: bool = True
+    CACHE_TTL: int = 300  # 5 минут
+
+    class Config:
+        env_prefix = "CHAT_"
+
+
+chat_settings = ChatSettings()
 settings = Settings()

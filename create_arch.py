@@ -70,8 +70,8 @@ def create_empty_structure():
         "app/core/cache/similarity.py",
 
         # Расчет стоимости
-        "app/core/cost_calculation/__init__.py",
-        "app/core/cost_calculation/calculator.py",
+        "app/core/calculation/__init__.py",
+        "app/core/calculation/cost.py",
 
         # База данных
         "app/database/__init__.py",

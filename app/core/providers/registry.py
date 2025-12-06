@@ -3,6 +3,9 @@ import uuid
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 import logging
+from sqlalchemy import text
+
+from app.core.exceptions.chat import ModelNotFoundException
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +52,6 @@ class ProviderRegistry:
 
     async def load_from_database(self, db):
         """Загрузить конфигурацию из БД"""
-        from sqlalchemy import text
 
         try:
             # 1. Загружаем провайдеров
@@ -124,7 +126,10 @@ class ProviderRegistry:
 
     def get_model_config(self, model_name: str) -> Optional[ModelConfig]:
         """Получить конфигурацию модели"""
-        return self.models.get(model_name)
+        model_config = self.models.get(model_name)
+        if not model_config:
+            raise ModelNotFoundException(model_name)
+        return model_config
 
     def get_provider_name_for_model(self, model_name: str) -> Optional[str]:
         """Получить имя провайдера для модели"""
@@ -173,5 +178,5 @@ class ProviderRegistry:
         self._initialized = False
 
 
-# Глобальный экземпляр реестра (Singleton)
-registry = ProviderRegistry()
+def create_registry() -> ProviderRegistry:
+    return ProviderRegistry()

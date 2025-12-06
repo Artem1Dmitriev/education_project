@@ -48,6 +48,11 @@ class BaseProvider(ABC):
         """Отправка запроса к API провайдера"""
         pass
 
+    @abstractmethod
+    async def close(self):
+        """Закрыть соединения"""
+        pass
+
     async def health_check(self) -> bool:
         """Проверка доступности провайдера"""
         try:
@@ -66,9 +71,4 @@ class BaseProvider(ABC):
 
     def _get_test_model(self) -> str:
         """Получить тестовую модель (переопределить в наследниках)"""
-        # По умолчанию берем первую доступную модель из реестра
-        from .registry import registry
-        for model_name in registry.models.keys():
-            if self.provider_name.lower() in model_name.lower():
-                return model_name
         return "mock-model"
