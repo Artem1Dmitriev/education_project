@@ -6,19 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Вынес логику из main">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/deps.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/deps.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/application/app_factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/app_factory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/application/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/application/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/model_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/model_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/request_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/request_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/response_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/response_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/database/repositories/user_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/user_repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/schemas/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/chat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/cost_calculation/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/cost_calculation/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/summarization/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/summarization/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/summarization/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/summarization/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/summarization/post_summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/summarization/post_summarizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/summarization/pre_summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/summarization/pre_summarizer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +28,13 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -55,32 +56,55 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python tests.Python tests in test_db.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.check_db.executor&quot;: &quot;Run&quot;,
-    &quot;Python.create.executor&quot;: &quot;Run&quot;,
-    &quot;Python.init_db.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_setup.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/dmitr/PycharmProjects/education_project&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests in test_db.py.executor": "Run",
+    "Python.check_db.executor": "Run",
+    "Python.create.executor": "Run",
+    "Python.init_db.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.test_setup.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "new",
+    "last_opened_file_path": "C:/Users/dmitr/PycharmProjects/education_project",
+    "settings.editor.selected.configurable": "com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\dmitr\PycharmProjects\ai-gateway-framework\app\core\chat" />
       <recent name="C:\Users\dmitr\PycharmProjects\ai-gateway-framework\app\application" />
       <recent name="C:\Users\dmitr\PycharmProjects\ai-gateway-framework\app\schemas" />
       <recent name="C:\Users\dmitr\PycharmProjects\education_project\ai_gateway_framework" />
       <recent name="C:\Users\dmitr\PycharmProjects\education_project\ai_gateway_framework\scripts" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.main">
+    <configuration name="full" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="education_project" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/app/tests/integration" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app/tests/integration/full.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="education_project" />
       <option name="ENV_FILES" value="" />
@@ -104,6 +128,59 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Python tests for app.tests.integration.full.test_database" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="education_project" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;app.tests.integration.full.test_database&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for app.tests.integration.test_db.test_database" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="education_project" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;app.tests.integration.test_db.test_database&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for app.tests.integration.test_di.test_di_container" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="education_project" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;app.tests.integration.test_di.test_di_container&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python tests.Python tests for app.tests.integration.test_di.test_di_container" />
+        <item itemvalue="Python tests.Python tests for app.tests.integration.test_db.test_database" />
+        <item itemvalue="Python tests.Python tests for app.tests.integration.full.test_database" />
+        <item itemvalue="Python.full" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
