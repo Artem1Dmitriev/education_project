@@ -1,60 +1,60 @@
-# app/core/providers/registry.py
-import uuid
-from typing import Dict, List, Optional
-from dataclasses import dataclass
-import logging
 
-logger = logging.getLogger(__name__)
+import uuid 
+from typing import Dict ,List ,Optional 
+from dataclasses import dataclass 
+import logging 
+
+logger =logging .getLogger (__name__ )
 
 
-@dataclass
-class ProviderConfig:
+@dataclass 
+class ProviderConfig :
     """Конфигурация провайдера из БД"""
-    provider_id: uuid.UUID
-    name: str
-    base_url: str
-    auth_type: str
-    max_requests_per_minute: int = 60
-    retry_count: int = 3
-    timeout_seconds: int = 30
-    is_active: bool = True
+    provider_id :uuid .UUID 
+    name :str 
+    base_url :str 
+    auth_type :str 
+    max_requests_per_minute :int =60 
+    retry_count :int =3 
+    timeout_seconds :int =30 
+    is_active :bool =True 
 
 
-@dataclass
-class ModelConfig:
+@dataclass 
+class ModelConfig :
     """Конфигурация модели из БД"""
-    model_id: uuid.UUID
-    provider_id: uuid.UUID
-    name: str
-    context_window: int = 8192
-    max_output_tokens: Optional[int] = None
-    input_price_per_1k: float = 0.0
-    output_price_per_1k: float = 0.0
-    is_available: bool = True
-    model_type: str = "text"
-    priority: int = 5
+    model_id :uuid .UUID 
+    provider_id :uuid .UUID 
+    name :str 
+    context_window :int =8192 
+    max_output_tokens :Optional [int ]=None 
+    input_price_per_1k :float =0.0 
+    output_price_per_1k :float =0.0 
+    is_available :bool =True 
+    model_type :str ="text"
+    priority :int =5 
 
 
-class ProviderRegistry:
+class ProviderRegistry :
     """
     Registry - только для хранения конфигурации (без бизнес-логики)
     Single Responsibility: управление данными о провайдерах и моделях
     """
 
-    def __init__(self):
-        self.providers: Dict[str, ProviderConfig] = {}
-        self.models: Dict[str, ModelConfig] = {}
-        self.provider_models: Dict[str, List[str]] = {}
-        self._initialized = False
+    def __init__ (self ):
+        self .providers :Dict [str ,ProviderConfig ]={}
+        self .models :Dict [str ,ModelConfig ]={}
+        self .provider_models :Dict [str ,List [str ]]={}
+        self ._initialized =False 
 
-    async def load_from_database(self, db):
+    async def load_from_database (self ,db ):
         """Загрузить конфигурацию из БД"""
-        from sqlalchemy import text
+        from sqlalchemy import text 
 
-        try:
-            # 1. Загружаем провайдеров
-            result = await db.execute(
-                text("""
+        try :
+
+            result =await db .execute (
+            text ("""
                 SELECT 
                     provider_id, provider_name, base_url, auth_type,
                     max_requests_per_minute, retry_count, timeout_seconds, is_active
@@ -63,26 +63,26 @@ class ProviderRegistry:
                 """)
             )
 
-            self.providers.clear()
-            self.provider_models.clear()
+            self .providers .clear ()
+            self .provider_models .clear ()
 
-            for row in result:
-                provider = ProviderConfig(
-                    provider_id=row.provider_id,
-                    name=row.provider_name,
-                    base_url=row.base_url,
-                    auth_type=row.auth_type,
-                    max_requests_per_minute=row.max_requests_per_minute or 60,
-                    retry_count=row.retry_count or 3,
-                    timeout_seconds=row.timeout_seconds or 30,
-                    is_active=row.is_active
+            for row in result :
+                provider =ProviderConfig (
+                provider_id =row .provider_id ,
+                name =row .provider_name ,
+                base_url =row .base_url ,
+                auth_type =row .auth_type ,
+                max_requests_per_minute =row .max_requests_per_minute or 60 ,
+                retry_count =row .retry_count or 3 ,
+                timeout_seconds =row .timeout_seconds or 30 ,
+                is_active =row .is_active 
                 )
-                self.providers[provider.name] = provider
-                self.provider_models[provider.name] = []
+                self .providers [provider .name ]=provider 
+                self .provider_models [provider .name ]=[]
 
-            # 2. Загружаем модели
-            result = await db.execute(
-                text("""
+
+            result =await db .execute (
+            text ("""
                 SELECT 
                     m.model_id, m.provider_id, m.model_name, m.context_window,
                     m.max_output_tokens, m.input_price_per_1k, m.output_price_per_1k,
@@ -94,84 +94,84 @@ class ProviderRegistry:
                 """)
             )
 
-            self.models.clear()
-            for row in result:
-                model = ModelConfig(
-                    model_id=row.model_id,
-                    provider_id=row.provider_id,
-                    name=row.model_name,
-                    context_window=row.context_window or 8192,
-                    max_output_tokens=row.max_output_tokens,
-                    input_price_per_1k=row.input_price_per_1k or 0.0,
-                    output_price_per_1k=row.output_price_per_1k or 0.0,
-                    is_available=row.is_available,
-                    model_type=row.model_type or "text",
-                    priority=row.priority or 5
+            self .models .clear ()
+            for row in result :
+                model =ModelConfig (
+                model_id =row .model_id ,
+                provider_id =row .provider_id ,
+                name =row .model_name ,
+                context_window =row .context_window or 8192 ,
+                max_output_tokens =row .max_output_tokens ,
+                input_price_per_1k =row .input_price_per_1k or 0.0 ,
+                output_price_per_1k =row .output_price_per_1k or 0.0 ,
+                is_available =row .is_available ,
+                model_type =row .model_type or "text",
+                priority =row .priority or 5 
                 )
-                self.models[model.name] = model
-                self.provider_models[row.provider_name].append(model.name)
+                self .models [model .name ]=model 
+                self .provider_models [row .provider_name ].append (model .name )
 
-            logger.info(f"✅ ProviderRegistry loaded: {len(self.providers)} providers, {len(self.models)} models")
-            self._initialized = True
+            logger .info (f"✅ ProviderRegistry loaded: {len (self .providers )} providers, {len (self .models )} models")
+            self ._initialized =True 
 
-        except Exception as e:
-            logger.error(f"❌ Failed to load ProviderRegistry: {e}")
-            raise
+        except Exception as e :
+            logger .error (f"❌ Failed to load ProviderRegistry: {e }")
+            raise 
 
-    def get_provider_config(self, provider_name: str) -> Optional[ProviderConfig]:
+    def get_provider_config (self ,provider_name :str )->Optional [ProviderConfig ]:
         """Получить конфигурацию провайдера"""
-        return self.providers.get(provider_name)
+        return self .providers .get (provider_name )
 
-    def get_model_config(self, model_name: str) -> Optional[ModelConfig]:
+    def get_model_config (self ,model_name :str )->Optional [ModelConfig ]:
         """Получить конфигурацию модели"""
-        return self.models.get(model_name)
+        return self .models .get (model_name )
 
-    def get_provider_name_for_model(self, model_name: str) -> Optional[str]:
+    def get_provider_name_for_model (self ,model_name :str )->Optional [str ]:
         """Получить имя провайдера для модели"""
-        model_config = self.models.get(model_name)
-        if not model_config:
-            return None
+        model_config =self .models .get (model_name )
+        if not model_config :
+            return None 
 
-        for provider_name, provider in self.providers.items():
-            if provider.provider_id == model_config.provider_id:
-                return provider_name
-        return None
+        for provider_name ,provider in self .providers .items ():
+            if provider .provider_id ==model_config .provider_id :
+                return provider_name 
+        return None 
 
-    def list_providers(self) -> List[Dict]:
+    def list_providers (self )->List [Dict ]:
         """Список всех провайдеров с моделями (только данные)"""
         return [
-            {
-                "name": provider_name,
-                "models": self.provider_models.get(provider_name, []),
-                "model_count": len(self.provider_models.get(provider_name, [])),
-                "is_active": provider.is_active
-            }
-            for provider_name, provider in self.providers.items()
+        {
+        "name":provider_name ,
+        "models":self .provider_models .get (provider_name ,[]),
+        "model_count":len (self .provider_models .get (provider_name ,[])),
+        "is_active":provider .is_active 
+        }
+        for provider_name ,provider in self .providers .items ()
         ]
 
-    def list_models(self) -> List[Dict]:
+    def list_models (self )->List [Dict ]:
         """Список всех моделей (только данные)"""
         return [
-            {
-                "name": model_name,
-                "provider": self.get_provider_name_for_model(model_name) or "Unknown",
-                "context_window": model.context_window,
-                "is_available": model.is_available
-            }
-            for model_name, model in self.models.items()
+        {
+        "name":model_name ,
+        "provider":self .get_provider_name_for_model (model_name )or "Unknown",
+        "context_window":model .context_window ,
+        "is_available":model .is_available 
+        }
+        for model_name ,model in self .models .items ()
         ]
 
-    def is_loaded(self) -> bool:
+    def is_loaded (self )->bool :
         """Проверить, загружены ли данные"""
-        return self._initialized
+        return self ._initialized 
 
-    def clear(self):
+    def clear (self ):
         """Очистить реестр (для тестов)"""
-        self.providers.clear()
-        self.models.clear()
-        self.provider_models.clear()
-        self._initialized = False
+        self .providers .clear ()
+        self .models .clear ()
+        self .provider_models .clear ()
+        self ._initialized =False 
 
 
-# Глобальный экземпляр реестра (Singleton)
-registry = ProviderRegistry()
+
+registry =ProviderRegistry ()

@@ -4,16 +4,97 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Вынес логику из main">
+    <list default="true" id="1e4c00dd-b7b3-42c3-ad20-ac4a5a71332e" name="Changes" comment="Вынес логику из chat endpoint. Далее фиксим">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/decision.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/routing/analyzer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/deps.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/deps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/routing/engine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/routing/filters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/analytics.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/routing/load_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/chat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/cost_calculation/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/cost_calculation/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/summarization/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/summarization/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/summarization/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/summarization/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/summarization/post_summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/summarization/post_summarizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/summarization/pre_summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/summarization/pre_summarizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/files.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/routing/scorer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/health.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/routing/selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/app_factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/app_factory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/handlers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/routing/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/handlers/root.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/handlers/root.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/lifespan.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/lifespan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/cache/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/cache/base.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/cache/redis_cache.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/cache/semantic_cache.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/cache/similarity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/chat/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/chat/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/chat/service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/chat/summarization/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/chat/summarization/base.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/chat/summarization/post_summarizer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/chat/summarization/pre_summarizer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/factory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/gemini_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/gemini_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/mock_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/mock_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/ollama_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/ollama_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/openai_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/openai_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/providers/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/providers/service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/routing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/routing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/routing/cost_optimizer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/routing/router.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/routing/rules_engine.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/security.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/model_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/model_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/provider_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/request_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/request_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/response_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/response_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/repositories/user_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repositories/user_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/session.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/file_processing/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/file_processing/base.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/file_processing/processors/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/file_processing/processors/docx_processor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/file_processing/processors/image_processor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/file_processing/processors/pdf_processor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/file_processing/processors/text_processor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/file_processing/storage.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/file_processing/tasks.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/chat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/health.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/providers.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/providers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/responses.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/responses.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/users.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/embeddings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/logging.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/monitoring.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/token_counter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/validators.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/workers/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/workers/celery_app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_arch.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/architecture.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/integration.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/benchmark.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/load_fixtures.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/conftest.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,10 +140,19 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests in test_analyzer.py.executor": "Run",
     "Python tests.Python tests in test_db.py.executor": "Run",
+    "Python tests.Python tests in test_filters.py.executor": "Run",
+    "Python tests.Python tests in test_integration.py.executor": "Run",
+    "Python tests.Python tests in test_routing_engine.py.executor": "Run",
+    "Python tests.Python tests in test_scorer.py.executor": "Run",
+    "Python tests.Python tests in test_types.py.executor": "Run",
+    "Python.143.executor": "Run",
+    "Python.chat.executor": "Run",
     "Python.check_db.executor": "Run",
     "Python.create.executor": "Run",
     "Python.init_db.executor": "Run",
+    "Python.init_test_db.executor": "Run",
     "Python.main.executor": "Run",
     "Python.test_setup.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -293,7 +383,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764820874829</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Вынес логику из chat endpoint. Далее фиксим">
+      <option name="closed" value="true" />
+      <created>1765083754584</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1765083754584</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -320,6 +418,7 @@
     <MESSAGE value="Создал responses схему, для оптимизации дублирования" />
     <MESSAGE value="Оптимизировал repo" />
     <MESSAGE value="Вынес логику из main" />
-    <option name="LAST_COMMIT_MESSAGE" value="Вынес логику из main" />
+    <MESSAGE value="Вынес логику из chat endpoint. Далее фиксим" />
+    <option name="LAST_COMMIT_MESSAGE" value="Вынес логику из chat endpoint. Далее фиксим" />
   </component>
 </project>
